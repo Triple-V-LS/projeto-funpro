@@ -9,6 +9,36 @@ paleta = {
     'Empírica': plt.cm.tab10(1)
 }
 
+def passeio_empirico(N: int):
+    _, ax = plt.subplots(figsize=(10,6))
+    trajeto, _ = pads.get_passeio_aleatorio(N)
+    print(f'Gráfico de um passeio aleatório unidimensional simétrico com N = {N} passos.')
+    ax.plot(trajeto, color=paleta['Empírica'])
+    ax.set_title(f'Exemplo de PADS com N={N}', pad=15, weight='bold')
+    ax.set_xlabel('Passo', labelpad=15)
+    ax.set_ylabel('Posição', labelpad=15)
+    ax.axhline(0, color='black', linestyle='--', linewidth=1.5)
+
+    plt.tight_layout()
+    plt.savefig('figures/passeio-aleatorio/passeio.png',dpi=300)
+    plt.show()
+
+def trajetorias_empiricas(N: int):
+    _, ax = plt.subplots(figsize=(10,6))
+    print(f'Gráfico com 10 exemplos de PADS com N = {N} passos.')
+    for _ in range(10):
+        trajeto, _ = pads.get_passeio_aleatorio(N)
+        ax.plot(trajeto)
+    ax.set_title(f'10 Trajétorias com {N} Passos', pad=15, weight='bold')
+    ax.set_xlabel('Passo', labelpad=15)
+    ax.set_ylabel('Posição', labelpad=15)
+    ax.axhline(0, color='black', linestyle='--', linewidth=1.5)
+
+    plt.tight_layout()
+    plt.savefig('figures/passeio-aleatorio/trajetorias.png',dpi=300)
+    plt.show()
+
+
 def convergencia_monte_carlo(N: int, M: int):
     pa = pads.get_analitica(N)
     pe = pads.get_monte_carlo(N, M)
