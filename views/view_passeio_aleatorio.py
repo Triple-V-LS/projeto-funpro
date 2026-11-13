@@ -12,7 +12,7 @@ paleta = {
     'Empírica': plt.cm.tab10(1)
 }
 
-def formatar_e_salvar(ax, titulo: str, xlabel: str, ylabel: str, caminho: str):
+def show_and_save(ax, titulo: str, xlabel: str, ylabel: str, caminho: str):
     ax.set_title(titulo, pad=15, weight='bold')
     ax.set_xlabel(xlabel, labelpad=15)
     ax.set_ylabel(ylabel, labelpad=15)
@@ -35,43 +35,49 @@ def exportar_csv(nome_arq: str, N: list, M: list, pa: list, pe: list):
 def passeio_empirico(N: int):
     _, ax = plt.subplots(figsize=(10,6))
     trajeto, _ = pads.get_passeio_aleatorio(N)
-    print(f'Gráfico de um passeio aleatório unidimensional simétrico com N = {N} passos.')
+    print('-'*150)
+    print(f'[1] Gráfico de um passeio aleatório unidimensional simétrico com N = {N} passos.')
     ax.plot(trajeto, color=paleta['Empírica'])
     ax.axhline(0, color='black', linestyle='--', linewidth=1.5)
-    formatar_e_salvar(
+    show_and_save(
         ax,
         f'Passeio com {N} passos',
         'Passo',
         'Posição',
         'figures/passeio-aleatorio/passeio.png'
     )
+    print('-'*150)
 
 def trajetorias_empiricas(N: int):
     _, ax = plt.subplots(figsize=(10,6))
-    print(f'Gráfico com 10 exemplos de PADS com N = {N} passos.')
+    print('-'*150)
+    print(f'[2] Gráfico com 10 exemplos de PADS com N = {N} passos.')
     for _ in range(10):
         trajeto, _ = pads.get_passeio_aleatorio(N)
         ax.plot(trajeto)
     ax.axhline(0, color='black', linestyle='--', linewidth=1.5)
-    formatar_e_salvar(
+    show_and_save(
         ax,
         f'10 Passeios com {N} Passos',
         'Passo',
         'Posição',
         'figures/passeio-aleatorio/trajetorias.png'
     )
+    print('-'*150)
 
 def convergencia_monte_carlo(N: int, M: int):
     pa = pads.get_analitica(N)
     pe = pads.get_empirica(N, M)
 
-    print(f"Probabilidade Analítica com {N} passos : {pa:.4f}")
-    print(f"Probabilidade Empírica com {N} passos em {M} replicações: {pe:.4f}")
+    print('-'*150)
+    print(f"[3] Probabilidade Analítica com {N} passos : {pa:.4f}")
+    print(f"[3] Probabilidade Empírica com {N} passos em {M} replicações: {pe:.4f}")
     print()
 
     x,y = pads.get_eixos_carlo(N)
+
     print(
-        'Gráfico e tabela da convergência das probabilidades'
+        '[3] Gráfico e tabela da convergência das probabilidades'
         f'\ncom N = {N} fixo e M variando em {x}.'
     )
     _, ax = plt.subplots(figsize=(10,6))
@@ -92,14 +98,14 @@ def convergencia_monte_carlo(N: int, M: int):
 
     ax.set_xscale('log')
     ax.legend()
-    formatar_e_salvar(
+    show_and_save(
         ax,
         f'Convergência de Monte Carlo (N = {N} fixo)',
         'Número de Simulações (M) - Escala Log',
         'Probabilidade de Retorno à Origem',
         'figures/passeio-aleatorio/convergencia_M.png'
     )
-
+    
     tabela = exportar_csv(
         'convergencia-carlo',
         N=[N] * len(pads.SCALE),
@@ -108,13 +114,15 @@ def convergencia_monte_carlo(N: int, M: int):
         pe=np.round(y, 4)
     )
     display(tabela)
+    print('-'*150)
 
 def convergencia_stirling(M: int):
     x, ya, ye = pads.get_eixos_stirling(M)
 
     _, ax = plt.subplots(figsize=(10,6))
+    print('-' * 150)
     print(
-        'Gráfico e tabela do limite das probabilidades'
+        '[4] Gráfico e tabela do limite das probabilidades'
         f'\ncom M = {M} fixo e N variando em {x}.'
     )
     ax.plot(x, ya, marker='s', color=paleta['Analítica'], label='Analítica')
@@ -128,14 +136,14 @@ def convergencia_stirling(M: int):
 
     ax.set_xscale('log')
     ax.legend()
-    formatar_e_salvar(
+    show_and_save(
         ax,
         f'Limite das Probabilidades com N Crescente e M={M} fixo',
         'Número de Passos (N) - Escala Log',
         'Probabilidade de Retorno à Origem',
         'figures/passeio-aleatorio/convergencia_S.png'
     )
-
+    
     tabela = exportar_csv(
         'convergencia-stirling',
         N=x,
@@ -144,3 +152,4 @@ def convergencia_stirling(M: int):
         pe=np.round(ye, 4)
     )
     display(tabela)
+    print('-'*150)
