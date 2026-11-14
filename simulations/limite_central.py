@@ -1,27 +1,23 @@
 import numpy as np
 
-TESTE_AMOSTRAL = 100
-TESTE_REPLICACOES = 10_000
-
-def get_resultados_amostrais(semente: int):
+def get_medias(teste_amostral: int, teste_replicacoes: int, lam: float, semente: int):
+    media_teorica = 1 / lam
     np.random.seed(semente)
-    sorteio = np.random.randint(140, 251, size = (TESTE_REPLICACOES, TESTE_AMOSTRAL))
-    print(sorteio.shape)
-
-    lista_medias = np.mean(sorteio, axis = 1)
-    medias_amostrais = np.mean(lista_medias)
-    desvio_amostral = np.std(lista_medias)
+    sorteio = np.random.exponential(media_teorica, size=(teste_replicacoes, teste_amostral))
+    medias = np.mean(sorteio, axis=1)
+    medias_amostrais = np.mean(medias)
 
     return {
-        'lista_medias': lista_medias,
         'medias_amostrais': medias_amostrais,
-        'desvio_amostral': desvio_amostral
+        'media_teorica': media_teorica,
+        'medias': medias
     }
 
-def get_resultados_teoricos():
-    media_teorica = (140 + 250) / 2
-    desvio_teorico = np.sqrt((((250 - 140 + 1) ** 2 - 1) / 12) / TESTE_AMOSTRAL)
-    return {
-        'media_teorica': media_teorica,
-        'desvio_teorico': desvio_teorico
-    }
+def get_eixos(media_teorica: float, teste_amostral: int):
+    desvio_padrao_teorico = media_teorica / np.sqrt(teste_amostral)
+    esquerda = media_teorica - 4 * desvio_padrao_teorico
+    direita = media_teorica + 4 * desvio_padrao_teorico
+    x = np.linspace(esquerda, direita, 500)
+    normal = (1 / (desvio_padrao_teorico * np.sqrt(2 * np.pi))) * np.exp(-(x - media_teorica) ** 2 / (2 * desvio_padrao_teorico ** 2))
+
+    return x, normal
